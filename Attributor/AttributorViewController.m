@@ -26,6 +26,31 @@
     [self.outlineButton setAttributedTitle:title forState:UIControlStateNormal];
 }
 
+- (void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self usePreferredFonts];
+    [ [NSNotificationCenter defaultCenter] addObserver:self
+                                              selector:@selector(preferredFontsChanged:)
+                                                  name:UIContentSizeCategoryDidChangeNotification
+                                                object:nil ];
+}
+
+-(void) viewWillDisappear:(BOOL)animated {
+    [self usePreferredFonts];
+}
+
+-(void) usePreferredFonts {
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIContentSizeCategoryDidChangeNotification
+                                                  object:nil];
+}
+
+- (void) preferredFontsChanged: (NSNotificationCenter *) notification {
+    self.body.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    self.headline.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+}
+
+
 - (IBAction)changeBodySelectionColorToMatchBackgroundOfButton:(UIButton *)sender {
     [self.body.textStorage addAttribute:NSForegroundColorAttributeName
                                   value:sender.backgroundColor
